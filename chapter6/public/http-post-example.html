@@ -1,8 +1,8 @@
-<!-- File: chapter6/public/http-post-example.html -->
+<!-- File: chapter6/public/http-post-delete.html -->
 <html ng-app="notesApp">
 
 <head>
-  <title>HTTP Post Example</title>
+  <title>HTTP Delete Example</title>
   <style>
     .item {
       padding: 10px;
@@ -16,6 +16,7 @@
        class="item">
     <div><span ng-bind="todo.label"></span></div>
     <div>- by <span ng-bind="todo.author"></span></div>
+    <button ng-click="mainCtrl.delete(todo)">Delete me</button>
   </div>
 
   <div>
@@ -40,7 +41,7 @@
 </script>
 <script>
   angular.module('notesApp', [])
-    .controller('MainCtrl', ['$http', function($http) {
+    .controller('MainCtrl', ['$http', '$log', function($http, $log) {
       var self = this;
       self.items = [];
       self.newTodo = {};
@@ -61,6 +62,17 @@
             .then(function(response) {
               self.newTodo = {};
             });
+      };
+      self.delete = function(todo) {
+        $http.delete('/api/note/' + todo.id)
+          .then(function(response) {
+            // For debugging
+            $log.log(response);
+          })
+          .then(fetchTodos)
+          .catch(function(err) {
+            $log.error(err);
+          });
       };
 
     }]);

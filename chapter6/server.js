@@ -2,13 +2,15 @@
 var express        = require('express');
 var morgan         = require('morgan');
 var bodyParser     = require('body-parser');
-var methodOverride = require('method-override');
+// A.MacLeay: doesn't look like this next line is needed?
+// var methodOverride = require('method-override');
 var app            = express();
 
 app.use(express.static(__dirname + '/public')); 	// set the static files location /public/img will be /img for users
 app.use(morgan('dev')); 					// log every request to the console
 app.use(bodyParser()); 						// pull information from html in POST
-app.use(methodOverride()); 					// simulate DELETE and PUT
+// A.MacLeay: doesn't look like this next line is needed?
+// app.use(methodOverride()); 					// simulate DELETE and PUT
 
 
 var router = express.Router();
@@ -52,6 +54,16 @@ router.get('/note/:id', function(req, res) {
   for (var i = 0; i < notes.length; i++) {
     if (notes[i].id == req.params.id) {
       res.send(notes[i]);
+      break;
+    }
+  }
+  res.send({msg: 'Note not found'}, 404);
+});
+router.delete('/note/:id', function(req, res) {
+  for (var i = 0; i < notes.length; i++) {
+    if (notes[i].id == req.params.id) {
+      res.send(notes[i]);
+      notes.splice(i, 1);
       break;
     }
   }
